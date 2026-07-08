@@ -1,0 +1,116 @@
+{
+  "description": "Gold questions engineered to expose vector RAG's weaknesses vs graph RAG. Each needs facts scattered across many chunks/episodes, or traversal/aggregation that top-k similarity cannot assemble.",
+  "questions": [
+    {
+      "id": "agg-arya-kills",
+      "category": "aggregation",
+      "question": "List every character Arya Stark kills.",
+      "why_vector_struggles": "Kills are spread across many episodes; top-k returns only the few most similar scenes, so the list is always partial."
+    },
+    {
+      "id": "path-jon-tywin",
+      "category": "path",
+      "question": "How is Jon Snow connected to Tywin Lannister?",
+      "why_vector_struggles": "The link is a chain of relationships never stated in any single chunk; similarity search has no notion of a path."
+    },
+    {
+      "id": "count-lannister",
+      "category": "count",
+      "question": "How many named characters belong to House Lannister?",
+      "why_vector_struggles": "Counting requires ALL members; retrieval caps at top-k chunks, so the count is unknowable from a few passages."
+    },
+    {
+      "id": "agg-hand-of-king",
+      "category": "aggregation",
+      "question": "Which characters have held the title Hand of the King?",
+      "why_vector_struggles": "Different holders appear in different seasons; no single chunk enumerates them."
+    },
+    {
+      "id": "join-betrayed-sworn",
+      "category": "structural-join",
+      "question": "Which characters betrayed someone they were sworn to?",
+      "why_vector_struggles": "Requires joining SWORN_TO facts with BETRAYED facts across the corpus — a relational join, not a similarity lookup."
+    },
+    {
+      "id": "path-relationship-arya-cersei",
+      "category": "path",
+      "question": "What is the shortest relationship path between Arya Stark and Cersei Lannister?",
+      "why_vector_struggles": "A graph path query with no textual equivalent to retrieve."
+    },
+    {
+      "id": "kg-tywin-killer-kin",
+      "category": "multihop",
+      "favors": "graph",
+      "question": "Who killed Tywin Lannister, and how is that killer related to Cersei Lannister?",
+      "graph_path": "Tyrion -KILLED-> Tywin ; Tyrion -SIBLING_OF-> Cersei",
+      "why_vector_struggles": "The killer fact and the sibling fact sit in different scenes; top-k rarely returns both and cannot chain them into one answer."
+    },
+    {
+      "id": "kg-tyrion-kills",
+      "category": "aggregation",
+      "favors": "graph",
+      "question": "List every character Tyrion Lannister kills.",
+      "graph_path": "aggregate Tyrion -KILLED-> * (e.g. Tywin, Shae)",
+      "why_vector_struggles": "Kills are scattered across episodes; similarity returns only the few most-similar scenes, so the list is always partial."
+    },
+    {
+      "id": "kg-baelish-lysa",
+      "category": "multi-relation",
+      "favors": "graph",
+      "question": "What is the full relationship between Petyr Baelish and Lysa Arryn?",
+      "graph_path": "Petyr -MARRIED_TO-> Lysa ; Petyr -KILLED-> Lysa",
+      "why_vector_struggles": "Two distinct relations on one pair; retrieval blends them into fuzzy prose and often misses that he both married and killed her."
+    },
+    {
+      "id": "kg-ramsay-father-house",
+      "category": "multihop",
+      "favors": "graph",
+      "question": "Who is Ramsay Bolton's father, and which house does that father belong to?",
+      "graph_path": "Roose -PARENT_OF-> Ramsay ; Roose -MEMBER_OF_HOUSE-> House Bolton",
+      "why_vector_struggles": "The two-hop parent-then-house link is never stated in any single chunk."
+    },
+    {
+      "id": "kg-aerys-killer-allegiance",
+      "category": "structural-join",
+      "favors": "graph",
+      "question": "Who killed the Mad King Aerys II Targaryen, and what group and house was the killer part of?",
+      "graph_path": "Jaime -KILLED-> Aerys II ; Jaime -MEMBER_OF_GROUP-> Kingsguard ; Jaime -MEMBER_OF_HOUSE-> House Lannister",
+      "why_vector_struggles": "Directional killer->victim fact plus an allegiance join; similarity search has no notion of direction or path."
+    },
+    {
+      "id": "vec-why-tyrion-kills-tywin",
+      "category": "motivation",
+      "favors": "vector",
+      "question": "Why does Tyrion Lannister kill his father Tywin?",
+      "why_graph_struggles": "The graph stores the KILLED edge but not the motive (finding Shae in Tywin's bed, the Tysha wound), which lives only in the passage text."
+    },
+    {
+      "id": "vec-blackwater-scene",
+      "category": "descriptive",
+      "favors": "vector",
+      "question": "Describe how the Battle of Blackwater unfolds.",
+      "why_graph_struggles": "An Event node carries no scene-level narrative; the blow-by-blow detail sits in adjacent chunks that embedding similarity retrieves well."
+    },
+    {
+      "id": "vec-melisandre-quote",
+      "category": "thematic",
+      "favors": "vector",
+      "question": "What does Melisandre mean when she says 'the night is dark and full of terrors'?",
+      "why_graph_struggles": "A quote/theme lookup with no representation as any ontology relation."
+    },
+    {
+      "id": "vec-arya-hound-arc",
+      "category": "nuance",
+      "favors": "vector",
+      "question": "How does Arya Stark's relationship with the Hound change as they travel together?",
+      "why_graph_struggles": "An evolving emotional arc expressed only in prose; no schema relation captures shifting attitude."
+    },
+    {
+      "id": "vec-drogo-wedding",
+      "category": "descriptive",
+      "favors": "vector",
+      "question": "What happens at Daenerys's wedding to Khal Drogo, and what gifts does she receive?",
+      "why_graph_struggles": "The graph has only the bare MARRIED_TO edge; the descriptive detail (the dragon eggs and other gifts) lives in a single passage."
+    }
+  ]
+}

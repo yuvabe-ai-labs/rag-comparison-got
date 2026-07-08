@@ -1,0 +1,22 @@
+# dependencies
+/node_modules
+
+# env files
+.env*
+!.env*.example
+
+# generated vector store (rebuild with: npm run build:pipeline)
+/data/chunks/
+/data/vector/
+
+# generated graph store (rebuild with: npm run extract:graph)
+/data/graph/
+
+# next.js
+/.next/
+/next-env.d.ts
+
+# misc
+.DS_Store
+*.tsbuildinfo
+npm-debug.log*

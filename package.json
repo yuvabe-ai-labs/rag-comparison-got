@@ -1,0 +1,46 @@
+{
+  "name": "rag-comparison-got",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "build:chunks": "tsx scripts/chunkText.ts",
+    "build:vector": "tsx scripts/vectorIndex.ts",
+    "build:pipeline": "npm run build:chunks && npm run build:vector",
+    "extract:graph": "tsx scripts/extractGraph.ts",
+    "resolve:graph": "tsx scripts/resolveEntities.ts",
+    "build:graph": "tsx scripts/buildGraph.ts",
+    "ask": "tsx scripts/ask.ts",
+    "ask:graph": "tsx scripts/askGraph.ts",
+    "ask:hybrid": "tsx scripts/askHybrid.ts",
+    "compare": "tsx scripts/compare.ts",
+    "eval": "tsx scripts/batchEval.ts"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "ml-pca": "^4.1.1",
+    "neo4j-driver": "^6.2.0",
+    "next": "^16.2.10",
+    "openai": "^6.44.0",
+    "plotly.js-dist-min": "^3.7.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-plotly.js": "^4.0.0",
+    "tailwind-merge": "^3.6.0",
+    "vis-data": "^8.0.4",
+    "vis-network": "^10.1.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/node": "^20",
+    "@types/plotly.js": "^3.0.10",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "tailwindcss": "^4.3.2",
+    "tsx": "^4.22.4",
+    "typescript": "^5"
+  }
+}
