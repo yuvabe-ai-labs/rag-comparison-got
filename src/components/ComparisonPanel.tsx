@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Card, Badge, Alert, Separator } from "@/components/ui/primitives";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import RubricBars from "./RubricBars";
 import VectorScatter from "./VectorScatter";
 import KgSubgraph from "./KgSubgraph";
@@ -35,31 +40,29 @@ function Processing({ height = 220 }: { height?: number }) {
 }
 
 function Sources({ method }: { method: MethodResult }) {
-  const [show, setShow] = useState(false);
+  const [open, setOpen] = useState(false);
   if (!method.sources.length && !method.cypher) return null;
   return (
-    <div className="mt-3 border-t border-border pt-2">
-      <button onClick={() => setShow((s) => !s)} className="kg-micro hover:text-foreground">
-        {show ? "▾" : "▸"} sources ({method.sources.length}){method.cypher ? " · cypher" : ""}
-      </button>
-      {show && (
-        <div className="mt-2 space-y-2">
-          {method.cypher && (
-            <pre className="overflow-x-auto rounded bg-black/30 p-2 text-[11px] leading-relaxed text-emerald-300">
-              {method.cypher}
-            </pre>
-          )}
-          <ul className="space-y-1">
-            {method.sources.slice(0, 12).map((s, i) => (
-              <li key={i} className="text-[11px] leading-snug text-muted-foreground">
-                <span className="text-slate-400">[{i + 1}]</span> {s.label}
-                {s.detail ? <span className="text-slate-500"> — {s.detail}</span> : null}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+    <Collapsible open={open} onOpenChange={setOpen} className="mt-3 border-t border-border pt-2">
+      <CollapsibleTrigger className="kg-micro hover:text-foreground">
+        {open ? "▾" : "▸"} sources ({method.sources.length}){method.cypher ? " · cypher" : ""}
+      </CollapsibleTrigger>
+      <CollapsibleContent className="mt-2 space-y-2">
+        {method.cypher && (
+          <pre className="overflow-x-auto rounded bg-black/30 p-2 text-[11px] leading-relaxed text-emerald-300">
+            {method.cypher}
+          </pre>
+        )}
+        <ul className="space-y-1">
+          {method.sources.slice(0, 12).map((s, i) => (
+            <li key={i} className="text-[11px] leading-snug text-muted-foreground">
+              <span className="text-slate-400">[{i + 1}]</span> {s.label}
+              {s.detail ? <span className="text-slate-500"> — {s.detail}</span> : null}
+            </li>
+          ))}
+        </ul>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
@@ -94,9 +97,9 @@ function MethodColumn({
       </div>
       <p className="text-sm font-semibold">Answer</p>
       {text ? (
-        <div className="kg-answer p-3" style={{ maxHeight: 260 }}>
-          {text}
-        </div>
+        <ScrollArea className="rounded-md border border-border bg-white/2" style={{ maxHeight: 260 }}>
+          <div className="p-3 text-sm leading-[1.55] whitespace-pre-wrap">{text}</div>
+        </ScrollArea>
       ) : (
         <Processing />
       )}
@@ -145,7 +148,9 @@ export default function ComparisonPanel({
       {stages && anyRunning && !result && <RunProgress stages={stages} />}
 
       {result?.error && (
-        <Alert variant="destructive">Run error: {result.error}</Alert>
+        <Alert variant="destructive">
+          <AlertDescription>Run error: {result.error}</AlertDescription>
+        </Alert>
       )}
 
       <div className="grid gap-4 lg:grid-cols-3">
@@ -177,7 +182,8 @@ export default function ComparisonPanel({
 
       {result?.verdict && (
         <Alert>
-          <span className="font-semibold">📜 Verdict</span> — {result.verdict}
+          <AlertTitle>📜 Verdict</AlertTitle>
+          <AlertDescription>{result.verdict}</AlertDescription>
         </Alert>
       )}
 

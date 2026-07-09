@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Button, Textarea, Alert } from "@/components/ui/primitives";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Sidebar from "@/components/Sidebar";
 import ComparisonPanel, { type PartialAnswers } from "@/components/ComparisonPanel";
 import type { StageState } from "@/components/RunProgress";
@@ -105,25 +107,31 @@ export default function Home() {
 
           {!ready && (
             <Alert variant="destructive" className="mb-4">
-              Live mode needs these env vars: {missing.join(", ")}. Neo4j must also be running with the graph imported.
+              <AlertDescription>
+                Live mode needs these env vars: {missing.join(", ")}. Neo4j must also be running with the graph imported.
+              </AlertDescription>
             </Alert>
           )}
 
           <p className="kg-micro mb-1">Question</p>
           <Textarea
-            textareaRef={textareaRef}
+            ref={textareaRef}
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Type a question or pick one from the sidebar…"
             className="mb-3 min-h-[90px] resize-y"
           />
-          <Button onClick={run} disabled={!ready || running || !question.trim()} className="mb-4 w-full">
+          <Button onClick={run} disabled={!ready || running || !question.trim()} size="lg" className="mb-4 w-full">
             {running ? "Running…" : "▶ Run Comparison"}
           </Button>
 
           <div className="my-6 border-t border-border" />
 
-          {error && <Alert variant="destructive" className="mb-4">Pipeline failed: {error}</Alert>}
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertDescription>Pipeline failed: {error}</AlertDescription>
+            </Alert>
+          )}
 
           {showPanel ? (
             <ComparisonPanel
