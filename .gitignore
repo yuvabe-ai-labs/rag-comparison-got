@@ -6,8 +6,9 @@
 !.env*.example
 
 # generated vector store (rebuild with: npm run build:pipeline)
+# NOTE: data/vector/ is committed on purpose so it deploys to Vercel,
+# where the build:pipeline step never runs.
 /data/chunks/
-/data/vector/
 
 # generated graph store (rebuild with: npm run extract:graph)
 /data/graph/
