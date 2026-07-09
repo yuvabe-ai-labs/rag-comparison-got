@@ -1,12 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import RubricBars from "./RubricBars";
 import VectorScatter from "./VectorScatter";
 import KgSubgraph from "./KgSubgraph";
@@ -36,33 +33,6 @@ function Processing({ height = 220 }: { height?: number }) {
     >
       <span className="animate-pulse">⏳ Processing…</span>
     </div>
-  );
-}
-
-function Sources({ method }: { method: MethodResult }) {
-  const [open, setOpen] = useState(false);
-  if (!method.sources.length && !method.cypher) return null;
-  return (
-    <Collapsible open={open} onOpenChange={setOpen} className="mt-3 border-t border-border pt-2">
-      <CollapsibleTrigger className="kg-micro hover:text-foreground">
-        {open ? "▾" : "▸"} sources ({method.sources.length}){method.cypher ? " · cypher" : ""}
-      </CollapsibleTrigger>
-      <CollapsibleContent className="mt-2 space-y-2">
-        {method.cypher && (
-          <pre className="overflow-x-auto rounded bg-black/30 p-2 text-[11px] leading-relaxed text-emerald-300">
-            {method.cypher}
-          </pre>
-        )}
-        <ul className="space-y-1">
-          {method.sources.slice(0, 12).map((s, i) => (
-            <li key={i} className="text-[11px] leading-snug text-muted-foreground">
-              <span className="text-slate-400">[{i + 1}]</span> {s.label}
-              {s.detail ? <span className="text-slate-500"> — {s.detail}</span> : null}
-            </li>
-          ))}
-        </ul>
-      </CollapsibleContent>
-    </Collapsible>
   );
 }
 
@@ -103,7 +73,6 @@ function MethodColumn({
       ) : (
         <Processing />
       )}
-      {method ? <Sources method={method} /> : null}
     </Card>
   );
 }
@@ -130,7 +99,6 @@ export default function ComparisonPanel({
   const [, hLabel, hIcon, hColor] = METHODS[2];
 
   const heading = result?.question || question;
-  const cat = result?.category;
   const judging = stages?.judge === "running";
   const anyRunning = stages && Object.values(stages).some((s) => s !== "done");
 
@@ -142,7 +110,6 @@ export default function ComparisonPanel({
 
   return (
     <div className="space-y-4">
-      {cat && <Badge>{cat}</Badge>}
       {heading && <h2 className="text-xl font-semibold">{heading}</h2>}
 
       {stages && anyRunning && !result && <RunProgress stages={stages} />}

@@ -7,12 +7,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import Sidebar from "@/components/Sidebar";
 import ComparisonPanel, { type PartialAnswers } from "@/components/ComparisonPanel";
 import type { StageState } from "@/components/RunProgress";
-import type { ComparisonResult, QuestionItem, ScatterData, Subgraph } from "@/lib/webTypes";
+import type { ComparisonResult, ScatterData, Subgraph } from "@/lib/webTypes";
 
 const EMPTY_STAGES: StageState = { vector: "pending", graph: "pending", hybrid: "pending", judge: "pending" };
 
 export default function Home() {
-  const [questions, setQuestions] = useState<QuestionItem[]>([]);
   const [ready, setReady] = useState(true);
   const [missing, setMissing] = useState<string[]>([]);
   const [question, setQuestion] = useState("");
@@ -29,7 +28,6 @@ export default function Home() {
     fetch("/api/questions")
       .then((r) => r.json())
       .then((d) => {
-        setQuestions(d.questions ?? []);
         setReady(Boolean(d.ready));
         setMissing(d.missing ?? []);
       })
@@ -98,7 +96,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <Sidebar questions={questions} onPick={onPick} />
+      <Sidebar onPick={onPick} />
 
       <main className="px-6 py-8 md:ml-[22rem]">
         <div className="mx-auto max-w-6xl">

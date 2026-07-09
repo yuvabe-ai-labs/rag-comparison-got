@@ -1,70 +1,84 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
-import type { QuestionItem } from "@/lib/webTypes";
 
 interface SidebarProps {
-  questions: QuestionItem[];
   onPick: (question: string) => void;
 }
 
-const questionButton =
-  "h-auto justify-start whitespace-normal px-2.5 py-2 text-left text-sm font-normal leading-relaxed text-[#8fa0b8] hover:text-foreground";
+const GROUPS: {
+  title: string;
+  questions: { category: string; question: string }[];
+}[] = [
+  {
+    title: "Graph Wins",
+    questions: [
+      {
+        category: "aggregation",
+        question: "List every character Arya Stark kills.",
+      },
+      {
+        category: "count",
+        question: "How many named characters belong to House Lannister?",
+      },
+      {
+        category: "relationship constraint",
+        question:
+          "Which members of House Lannister betrayed another member of their own House?",
+      },
+    ],
+  },
+  {
+    title: "Vector Wins",
+    questions: [
+      {
+        category: "descriptive",
+        question:
+          "What happens at Daenerys's wedding to Khal Drogo, and what gifts does she receive?",
+      },
+      {
+        category: "motivation",
+        question: "Why does Tyrion Lannister kill his father Tywin?",
+      },
+      {
+        category: "thematic",
+        question:
+          "What does Melisandre mean when she says 'the night is dark and full of terrors'?",
+      },
+    ],
+  },
+];
 
-export default function Sidebar({ questions, onPick }: SidebarProps) {
-  const categories = [...new Set(questions.map((q) => q.category).filter(Boolean))].sort();
-  const [open, setOpen] = useState<Record<string, boolean>>(() =>
-    Object.fromEntries(categories.map((c) => [c, true])),
-  );
-  const uncategorized = questions.filter((q) => !q.category);
-
+export default function Sidebar({ onPick }: SidebarProps) {
   return (
     <aside className="fixed left-0 top-0 z-40 hidden h-screen w-[22rem] border-r border-border bg-[#0d1119] md:block">
       <ScrollArea className="h-full px-3 py-5">
-        <p className="kg-micro mb-3 px-1">Gold Questions</p>
+        <p className="mb-3 px-1 text-xl">Questions</p>
 
-        {categories.map((cat) => {
-          const catQs = questions.filter((q) => q.category === cat);
-          const isOpen = open[cat] ?? true;
-          return (
-            <Collapsible
-              key={cat}
-              open={isOpen}
-              onOpenChange={(v) => setOpen((o) => ({ ...o, [cat]: v }))}
-              className="mb-1"
-            >
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="h-auto w-full justify-between px-2 py-2 text-sm font-semibold text-muted-foreground"
+        {GROUPS.map((group) => (
+          <div key={group.title} className="mb-5">
+            <p className="px-2 py-2 text-sm font-semibold text-muted-foreground">
+              {group.title}
+            </p>
+            <div className="flex flex-col gap-2">
+              {group.questions.map((q, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => onPick(q.question)}
+                  className="flex w-full flex-col gap-1 rounded-md border border-border bg-white/2 px-3 py-2.5 text-left transition-colors hover:border-slate-500 hover:bg-white/5"
                 >
-                  <span>{cat}</span>
-                  <span className="text-xs">{isOpen ? "▾" : "▸"}</span>
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="flex flex-col pb-1">
-                {catQs.map((q, i) => (
-                  <Button key={i} variant="ghost" onClick={() => onPick(q.question)} className={questionButton}>
+                  <span className="text-sm font-medium text-[#8fa0b8]">
+                    category: {q.category}
+                  </span>
+                  <span className="text-sm font-normal leading-relaxed text-[#8fa0b8]">
                     {q.question}
-                  </Button>
-                ))}
-              </CollapsibleContent>
-            </Collapsible>
-          );
-        })}
-
-        {uncategorized.length > 0 && (
-          <div className="mt-4 flex flex-col">
-            {uncategorized.map((q, i) => (
-              <Button key={i} variant="ghost" onClick={() => onPick(q.question)} className={questionButton}>
-                {q.question}
-              </Button>
-            ))}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
-        )}
+        ))}
       </ScrollArea>
     </aside>
   );
