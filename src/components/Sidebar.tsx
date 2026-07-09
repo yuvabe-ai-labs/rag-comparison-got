@@ -14,12 +14,12 @@ const GROUPS: {
     title: "Graph Wins",
     questions: [
       {
-        category: "aggregation",
-        question: "List every character Arya Stark kills.",
-      },
-      {
         category: "count",
         question: "How many named characters belong to House Lannister?",
+      },
+      {
+        category: "aggregation",
+        question: "List every character Arya Stark kills.",
       },
       {
         category: "relationship constraint",
